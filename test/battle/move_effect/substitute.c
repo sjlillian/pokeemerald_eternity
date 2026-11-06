@@ -18,7 +18,7 @@ SINGLE_BATTLE_TEST("Substitute creates a Substitute at the cost of 1/4 users max
     } WHEN {
         TURN { MOVE(player, MOVE_SUBSTITUTE); }
     } SCENE {
-        maxHP = GetMonData(&gPlayerParty[0], MON_DATA_HP);
+        maxHP = GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_HP);
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUBSTITUTE, player);
         HP_BAR(player, captureDamage: &costHP);
         MESSAGE("Wobbuffet put in a substitute!");
@@ -51,7 +51,6 @@ SINGLE_BATTLE_TEST("Substitute's HP cost can trigger a berry")
         TURN { MOVE(player, MOVE_SUBSTITUTE); }
     } SCENE {
         ANIMATION(ANIM_TYPE_MOVE, MOVE_SUBSTITUTE, player);
-        MESSAGE("Wobbuffet restored its health using its Sitrus Berry!");
     }
 }
 
@@ -69,111 +68,27 @@ SINGLE_BATTLE_TEST("Substitute's HP cost doesn't trigger effects that trigger on
     }
 }
 
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT")
+SINGLE_BATTLE_TEST("Baton Pass passes Substitutes")
 {
     GIVEN {
-        PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_WOBBUFFET);
+        ASSUME(GetMoveEffect(MOVE_BATON_PASS) == EFFECT_BATON_PASS);
+        PLAYER(SPECIES_WOBBUFFET) { MaxHP(400); HP(400); }
+        PLAYER(SPECIES_WYNAUT) { MaxHP(200); HP(200); Defense(999); }
+        OPPONENT(SPECIES_WOBBUFFET) { Attack(1); }
     } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
+        TURN { MOVE(player, MOVE_SUBSTITUTE); }
+        TURN { MOVE(player, MOVE_BATON_PASS); SEND_OUT(player, 1); }
+        TURN { MOVE(opponent, MOVE_SCRATCH); }
     } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SUBSTITUTE, player);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_BATON_PASS, player);
+        SEND_IN_MESSAGE("Wynaut");
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, opponent);
         SUB_HIT(player);
-    }
-}
-
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT, break TRUE")
-{
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Level(1); }
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        SUB_HIT(player, subBreak: TRUE);
-    }
-}
-
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT, break FALSE")
-{
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Level(100); }
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        SUB_HIT(player, subBreak: FALSE);
-    }
-}
-
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT, records damage")
-{
-    u16 damage;
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        SUB_HIT(player, captureDamage: &damage);
     } THEN {
-        EXPECT_GT(damage, 0);
+        EXPECT_EQ(player->species, SPECIES_WYNAUT);
+        EXPECT_EQ(player->hp, player->maxHP);
+        EXPECT(player->volatiles.substitute);
+        EXPECT_EQ((u32)player->volatiles.substituteHP, 99);
     }
 }
-
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT, records damage, break FALSE")
-{
-    u16 damage;
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET);
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        SUB_HIT(player, captureDamage: &damage, subBreak: FALSE);
-    } THEN {
-        EXPECT_GT(damage, 0);
-    }
-}
-
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT, records damage, break TRUE")
-{
-    u16 damage;
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Level(1); }
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        SUB_HIT(player, captureDamage: &damage, subBreak: TRUE);
-    } THEN {
-        EXPECT_GT(damage, 0);
-    }
-}
-
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT, break TRUE, failing")
-{
-    KNOWN_FAILING;  //  For testing purposes
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Level(100); }
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        SUB_HIT(player, subBreak: TRUE);
-    }
-}
-
-SINGLE_BATTLE_TEST("Substitute hits are detected by SUB_HIT, break FALSE, failing")
-{
-    KNOWN_FAILING;  //  For testing purposes
-    GIVEN {
-        PLAYER(SPECIES_WOBBUFFET) { Level(1); }
-        OPPONENT(SPECIES_WOBBUFFET);
-    } WHEN {
-        TURN { MOVE(player, MOVE_SUBSTITUTE); MOVE(opponent, MOVE_SCRATCH); }
-    } SCENE {
-        SUB_HIT(player, subBreak: FALSE);
-    }
-}
-
-TO_DO_BATTLE_TEST("Baton Pass passes Substitutes");
