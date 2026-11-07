@@ -1,0 +1,32 @@
+{
+  "id": "MAP_AURUM_LAKE",
+  "name": "AurumLake",
+  "layout": "LAYOUT_AURUM_LAKE",
+  "music": "MUS_ROUTE119",
+  "region": "REGION_HOENN",
+  "region_map_section": "MAPSEC_AURUM_LAKE",
+  "requires_flash": false,
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_cycling": true,
+  "allow_escaping": false,
+  "allow_running": true,
+  "show_map_name": true,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": [
+    {
+      "map": "MAP_AURUM_CITY",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_PANGEA_ROUTE9",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "object_events": [],
+  "warp_events": [],
+  "coord_events": [],
+  "bg_events": []
+}

@@ -1,6 +1,7 @@
 {
   "group_order": [
     "gMapGroup_TownsAndRoutes",
+    "gMapGroup_Pangea",
     "gMapGroup_IndoorLittleroot",
     "gMapGroup_IndoorOldale",
     "gMapGroup_IndoorDewford",
@@ -1160,5 +1161,45 @@
   ],
   "gMapGroup_IndoorSevenIslandRoute_Frlg": [
     "SevenIsland_SevaultCanyon_House_Frlg"
+  ],
+  "gMapGroup_Pangea": [
+    "StibiumTown",
+    "BismutumVillage",
+    "KaliumTown",
+    "NatriumVillage",
+    "FerrumTown",
+    "CuprumTown",
+    "ManganumCity",
+    "HydrargyrumCity",
+    "AurumCity",
+    "NiccolumVillage",
+    "StannumVillage",
+    "ArgentumVillage",
+    "KaliumForest",
+    "NatriumLake",
+    "FerrumRiver",
+    "AurumForest",
+    "AurumLake",
+    "CuprumMountain",
+    "ManganumMountain",
+    "ArgentumMountain",
+    "PangeanPass",
+    "PangeaBikeBridge",
+    "PangeaIsland1",
+    "PangeaIsland2",
+    "PangeaIsland3",
+    "PangeaIsland4",
+    "PangeaRoute1",
+    "PangeaRoute2",
+    "PangeaRoute3",
+    "PangeaRoute4",
+    "PangeaRoute5",
+    "PangeaRoute6",
+    "PangeaRoute7",
+    "PangeaRoute8",
+    "PangeaRoute9",
+    "PangeaRoute10",
+    "PangeaRoute11",
+    "PangeaRoute12"
   ]
 }
