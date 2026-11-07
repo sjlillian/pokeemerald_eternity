@@ -1,0 +1,32 @@
+{
+  "id": "MAP_MANGANUM_MOUNTAIN",
+  "name": "ManganumMountain",
+  "layout": "LAYOUT_MANGANUM_MOUNTAIN",
+  "music": "MUS_MT_CHIMNEY",
+  "region": "REGION_HOENN",
+  "region_map_section": "MAPSEC_MANGANUM_MOUNTAIN",
+  "requires_flash": false,
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_cycling": true,
+  "allow_escaping": false,
+  "allow_running": true,
+  "show_map_name": true,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": [
+    {
+      "map": "MAP_PANGEAN_PASS",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_MANGANUM_CITY",
+      "offset": 0,
+      "direction": "right"
+    }
+  ],
+  "object_events": [],
+  "warp_events": [],
+  "coord_events": [],
+  "bg_events": []
+}
