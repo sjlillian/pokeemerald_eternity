@@ -20,8 +20,30 @@
       "direction": "up"
     }
   ],
-  "object_events": [],
-  "warp_events": [],
+  "object_events": [
+    {
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "x": 8,
+      "graphics_id": "OBJ_EVENT_GFX_BOY_1",
+      "flag": "0",
+      "movement_range_x": 0,
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "StibiumTown_EventScript_Boy",
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "elevation": 3
+    }
+  ],
+  "warp_events": [
+    {
+      "y": 10,
+      "elevation": 0,
+      "dest_map": "MAP_PANGEA_ROUTE1",
+      "dest_warp_id": "0",
+      "x": 10
+    }
+  ],
   "coord_events": [],
   "bg_events": []
 }

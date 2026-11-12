@@ -8,6 +8,3 @@ dist/
 out/
 *.vsix
 .vscode-test/
-
-# Eternity root ignores *.js — keep Studio JS tracked via git add -f / this folder intent.
-!.gitignore

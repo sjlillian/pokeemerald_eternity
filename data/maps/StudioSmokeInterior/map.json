@@ -1,0 +1,27 @@
+{
+  "id": "MAP_STUDIO_SMOKE_INTERIOR",
+  "name": "StudioSmokeInterior",
+  "layout": "LAYOUT_STUDIO_SMOKE_INTERIOR",
+  "music": "MUS_LITTLEROOT",
+  "region": "REGION_HOENN",
+  "region_map_section": "MAPSEC_STUDIO_SMOKE_INTERIOR",
+  "requires_flash": false,
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_cycling": true,
+  "allow_escaping": true,
+  "allow_running": true,
+  "show_map_name": true,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": [
+    {
+      "offset": 0,
+      "direction": "down",
+      "map": "MAP_STIBIUM_TOWN"
+    }
+  ],
+  "object_events": [],
+  "warp_events": [],
+  "coord_events": [],
+  "bg_events": []
+}

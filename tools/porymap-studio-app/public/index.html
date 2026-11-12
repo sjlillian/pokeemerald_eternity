@@ -7,81 +7,153 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="app">
-      <header class="brand">
-        <div>
-          <p class="eyebrow">Aurora · map cockpit</p>
-          <h1>Porymap Studio</h1>
-        </div>
-        <div id="syncBadge" class="badge idle" title="Sync state">idle</div>
-      </header>
+    <div class="shell">
+      <aside class="sidebar">
+        <header class="brand">
+          <div>
+            <p class="eyebrow">Aurora · map studio</p>
+            <h1>Porymap Studio</h1>
+          </div>
+          <div id="syncBadge" class="badge idle">idle</div>
+        </header>
 
-      <section class="strip" id="projectStrip" aria-label="Project status">
-        <div class="strip-row">
-          <span class="label">Project</span>
-          <span id="projectRoot" class="mono truncate">…</span>
+        <div class="strip" id="projectStrip">
+          <div class="strip-row"><span class="label">Project</span><span id="projectRoot" class="mono truncate">…</span></div>
+          <div class="strip-row"><span class="label">Porymap</span><span id="porymapStatus" class="mono truncate">…</span></div>
+          <p id="modeBanner" class="banner hidden"></p>
         </div>
-        <div class="strip-row">
-          <span class="label">Porymap</span>
-          <span id="porymapStatus" class="mono truncate">…</span>
-        </div>
-        <p id="modeBanner" class="banner hidden"></p>
-      </section>
 
-      <section class="cta" aria-label="Primary actions">
-        <button type="button" id="btnLaunch" class="btn primary">Launch / Focus Porymap</button>
-        <div class="cta-row">
-          <button type="button" id="btnRegion" class="btn">Open Region Map Editor</button>
-          <button type="button" id="btnGroup" class="btn">Show gMapGroup_Pangea</button>
+        <div class="cta">
+          <button type="button" id="btnLaunch" class="btn primary">Launch Porymap 6.3.1</button>
+          <button type="button" id="btnCreate" class="btn">Create map…</button>
+          <button type="button" id="btnAck" class="btn warn hidden">Ack external reload</button>
         </div>
-        <button type="button" id="btnDefaultMap" class="btn ghost">Open focused map · StibiumTown</button>
-        <button type="button" id="btnAck" class="btn warn hidden">Mark reload done</button>
-      </section>
 
-      <section class="panel" aria-label="Pangea maps">
-        <div class="panel-head">
-          <h2>gMapGroup_Pangea</h2>
-          <input id="mapSearch" type="search" placeholder="Filter maps…" autocomplete="off" />
+        <div class="panel maps-panel">
+          <div class="panel-head">
+            <h2>gMapGroup_Pangea</h2>
+            <input id="mapSearch" type="search" placeholder="Filter…" autocomplete="off" />
+          </div>
+          <p id="mapMeta" class="meta"></p>
+          <ul id="mapList" class="map-list"></ul>
         </div>
-        <p id="mapMeta" class="meta"></p>
-        <ul id="mapList" class="map-list"></ul>
-      </section>
 
-      <section class="panel" aria-label="Porymap surfaces">
-        <div class="panel-head">
-          <h2>Surfaces</h2>
+        <div class="panel">
+          <div class="panel-head"><h2>Activity</h2></div>
+          <p id="reloadHint" class="hint"></p>
+          <ul id="activityList" class="activity"></ul>
         </div>
-        <p class="meta">Guided entry into native Porymap — not web reimplementations.</p>
-        <div id="surfaceList" class="surfaces"></div>
-      </section>
+      </aside>
 
-      <section class="panel" aria-label="Activity feed">
-        <div class="panel-head">
-          <h2>Activity</h2>
+      <main class="workspace">
+        <div class="workspace-top">
+          <div>
+            <h2 id="activeMapTitle">Select a map</h2>
+            <p id="activeMapSub" class="meta">Open a Pangea map to edit tiles, events, warps, scripts, and connections in-app.</p>
+          </div>
+          <div class="tabs" id="editorTabs" hidden>
+            <button type="button" class="tab active" data-tab="layout">Layout</button>
+            <button type="button" class="tab" data-tab="events">Events</button>
+            <button type="button" class="tab" data-tab="warps">Warps</button>
+            <button type="button" class="tab" data-tab="scripts">Scripts</button>
+            <button type="button" class="tab" data-tab="connections">Connections</button>
+            <button type="button" class="tab" data-tab="header">Header</button>
+          </div>
         </div>
-        <p id="reloadHint" class="hint"></p>
-        <ul id="activityList" class="activity"></ul>
-      </section>
 
-      <details class="paths">
-        <summary>Paths</summary>
-        <pre id="pathsDetail" class="mono"></pre>
-      </details>
+        <section id="emptyState" class="empty">
+          <p>Pick <strong>StibiumTown</strong> (or any Pangea map) to start editing. Changes write straight into the eternity tree; the canvas updates live.</p>
+        </section>
+
+        <section id="editorRoot" class="editor" hidden>
+          <div class="tab-pane active" data-pane="layout">
+            <div class="layout-tools">
+              <label>Metatile <input id="brushId" type="number" min="0" max="1023" value="1" /></label>
+              <label>Collision <input id="brushCollision" type="number" min="0" max="3" value="0" /></label>
+              <label>Elevation <input id="brushElevation" type="number" min="0" max="15" value="3" /></label>
+              <label class="check"><input id="brushPaint" type="checkbox" checked /> Paint</label>
+              <button type="button" id="btnSaveLayout" class="btn primary">Save layout</button>
+              <span id="layoutStatus" class="meta"></span>
+            </div>
+            <div class="layout-split">
+              <div class="canvas-wrap">
+                <canvas id="mapCanvas" width="320" height="320"></canvas>
+              </div>
+              <div class="sheet-wrap">
+                <p class="meta">Metatile picker</p>
+                <canvas id="sheetCanvas" width="256" height="256"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane" data-pane="events">
+            <div class="row-actions">
+              <button type="button" id="btnAddObject" class="btn">Add object event</button>
+              <button type="button" id="btnSaveEvents" class="btn primary">Save events</button>
+            </div>
+            <div id="objectEventsEditor" class="event-editor"></div>
+          </div>
+
+          <div class="tab-pane" data-pane="warps">
+            <div class="row-actions">
+              <button type="button" id="btnAddWarp" class="btn">Add warp</button>
+              <button type="button" id="btnSaveWarps" class="btn primary">Save warps</button>
+            </div>
+            <div id="warpEventsEditor" class="event-editor"></div>
+          </div>
+
+          <div class="tab-pane" data-pane="scripts">
+            <div class="row-actions">
+              <button type="button" id="btnSaveScripts" class="btn primary">Save scripts.inc</button>
+              <span id="scriptsStatus" class="meta"></span>
+            </div>
+            <textarea id="scriptsEditor" spellcheck="false"></textarea>
+          </div>
+
+          <div class="tab-pane" data-pane="connections">
+            <div class="row-actions">
+              <button type="button" id="btnAddConn" class="btn">Add connection</button>
+              <button type="button" id="btnSaveConn" class="btn primary">Save connections</button>
+            </div>
+            <div id="connectionsEditor" class="event-editor"></div>
+          </div>
+
+          <div class="tab-pane" data-pane="header">
+            <div class="header-grid" id="headerEditor"></div>
+            <button type="button" id="btnSaveHeader" class="btn primary">Save header</button>
+          </div>
+        </section>
+      </main>
     </div>
 
-    <dialog id="guideDialog">
-      <form method="dialog" class="guide">
-        <h3 id="guideTitle"></h3>
-        <p id="guideBody"></p>
+    <dialog id="createDialog">
+      <form method="dialog" class="guide create-form" id="createForm">
+        <h3>Create map</h3>
+        <label>Name <input name="name" required pattern="[A-Za-z][A-Za-z0-9_]*" placeholder="StibiumMart" /></label>
+        <label>Width <input name="width" type="number" min="1" max="128" value="20" /></label>
+        <label>Height <input name="height" type="number" min="1" max="128" value="20" /></label>
+        <label>Map type
+          <select name="map_type">
+            <option value="MAP_TYPE_TOWN">Town</option>
+            <option value="MAP_TYPE_CITY">City</option>
+            <option value="MAP_TYPE_ROUTE">Route</option>
+            <option value="MAP_TYPE_INDOOR">Indoor / interior</option>
+            <option value="MAP_TYPE_NONE">None</option>
+          </select>
+        </label>
+        <label>Primary tileset <input name="primary_tileset" value="gTileset_General" /></label>
+        <label>Secondary tileset <input name="secondary_tileset" value="gTileset_Petalburg" /></label>
+        <label>Clone layout from (optional) <input name="cloneFrom" placeholder="StibiumTown" /></label>
+        <label>Fill metatile id <input name="fillMetatileId" type="number" value="1" /></label>
         <div class="guide-actions">
-          <a id="guideDocs" href="#" target="_blank" rel="noreferrer">Docs</a>
-          <button value="close" class="btn primary">Got it</button>
+          <button value="cancel" class="btn">Cancel</button>
+          <button value="create" class="btn primary">Create</button>
         </div>
       </form>
     </dialog>
