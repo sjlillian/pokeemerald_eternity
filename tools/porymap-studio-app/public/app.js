@@ -42,11 +42,20 @@ function setBadge(syncState) {
   }
 }
 
+function setPathClip(el, text) {
+  const value = text || "(unset)";
+  el.textContent = value;
+  el.title = value;
+}
+
 function renderStatus(status) {
   state.status = status;
-  $("projectRoot").textContent = status.projectRoot || "(unset)";
+  setPathClip($("projectRoot"), status.projectRoot || "(unset)");
   const pory = status.porymap || {};
-  $("porymapStatus").textContent = `${pory.label || "unknown"} · ${status.porymapPath || ""}`;
+  setPathClip(
+    $("porymapStatus"),
+    `${pory.label || "unknown"} · ${status.porymapPath || ""}`
+  );
   setBadge(status.sync?.state || "idle");
   $("reloadHint").textContent = status.reloadHint || "";
   const banner = $("modeBanner");
@@ -65,14 +74,18 @@ function renderActivity(items) {
   list.innerHTML = "";
   if (!items.length) {
     const li = document.createElement("li");
-    li.innerHTML = `<span class="path">Waiting for edits…</span><span class="when">live</span>`;
+    li.innerHTML = `<span class="path" title="Waiting for edits…">Waiting for edits…</span><span class="when">live</span>`;
     list.appendChild(li);
     return;
   }
   for (const item of items.slice(0, 20)) {
     const li = document.createElement("li");
     const when = item.at ? new Date(item.at).toLocaleTimeString() : "";
-    li.innerHTML = `<span class="path">${item.type || "change"} · ${item.path}</span><span class="when">${when}</span>`;
+    const label = `${item.type || "change"} · ${item.path}`;
+    li.innerHTML = `<span class="path"></span><span class="when">${when}</span>`;
+    const pathEl = li.querySelector(".path");
+    pathEl.textContent = label;
+    pathEl.title = label;
     list.appendChild(li);
   }
 }
@@ -90,6 +103,7 @@ function renderMaps(payload) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.textContent = m.name;
+    btn.title = m.name;
     btn.addEventListener("click", () => openMap(m.name));
     const tag = document.createElement("span");
     tag.className = "tag" + (m.pinned ? " pin" : "");
@@ -716,7 +730,84 @@ function connectEvents() {
   }
 }
 
+const SIDEBAR_KEY = "porymapStudio.sidebarWidth";
+
+function clampSidebar(px) {
+  const styles = getComputedStyle(document.documentElement);
+  const min = Number.parseFloat(styles.getPropertyValue("--sidebar-min")) || 260;
+  const max = Number.parseFloat(styles.getPropertyValue("--sidebar-max")) || 560;
+  const hardMax = Math.min(max, Math.floor(window.innerWidth * 0.55));
+  return Math.max(min, Math.min(hardMax, Math.round(px)));
+}
+
+function applySidebarWidth(px) {
+  const width = clampSidebar(px);
+  document.documentElement.style.setProperty("--sidebar", `${width}px`);
+  return width;
+}
+
+function initSidebarResize() {
+  const saved = Number(localStorage.getItem(SIDEBAR_KEY));
+  if (Number.isFinite(saved) && saved > 0) applySidebarWidth(saved);
+  else applySidebarWidth(340);
+
+  const handle = $("sidebarResizer");
+  if (!handle) return;
+
+  let dragging = false;
+
+  const onMove = (clientX) => {
+    if (!dragging) return;
+    const width = applySidebarWidth(clientX);
+    localStorage.setItem(SIDEBAR_KEY, String(width));
+  };
+
+  handle.addEventListener("pointerdown", (evt) => {
+    if (window.matchMedia("(max-width: 980px)").matches) return;
+    dragging = true;
+    document.body.classList.add("is-resizing-sidebar");
+    handle.setPointerCapture?.(evt.pointerId);
+    evt.preventDefault();
+  });
+  handle.addEventListener("pointermove", (evt) => onMove(evt.clientX));
+  const end = (evt) => {
+    if (!dragging) return;
+    dragging = false;
+    document.body.classList.remove("is-resizing-sidebar");
+    try {
+      handle.releasePointerCapture?.(evt.pointerId);
+    } catch {
+      /* ignore */
+    }
+  };
+  handle.addEventListener("pointerup", end);
+  handle.addEventListener("pointercancel", end);
+
+  handle.addEventListener("keydown", (evt) => {
+    const current =
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--sidebar")
+      ) || 340;
+    if (evt.key === "ArrowLeft") {
+      localStorage.setItem(SIDEBAR_KEY, String(applySidebarWidth(current - 16)));
+      evt.preventDefault();
+    } else if (evt.key === "ArrowRight") {
+      localStorage.setItem(SIDEBAR_KEY, String(applySidebarWidth(current + 16)));
+      evt.preventDefault();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    const current =
+      Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--sidebar")
+      ) || 340;
+    applySidebarWidth(current);
+  });
+}
+
 async function boot() {
+  initSidebarResize();
   const [status, maps] = await Promise.all([api("/api/status"), api("/api/maps")]);
   renderStatus(status);
   renderMaps(maps);

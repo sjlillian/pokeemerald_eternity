@@ -14,9 +14,9 @@
   </head>
   <body>
     <div class="shell">
-      <aside class="sidebar">
+      <aside class="sidebar" id="sidebar">
         <header class="brand">
-          <div>
+          <div class="brand-text">
             <p class="eyebrow">Aurora · map studio</p>
             <h1>Porymap Studio</h1>
           </div>
@@ -24,8 +24,14 @@
         </header>
 
         <div class="strip" id="projectStrip">
-          <div class="strip-row"><span class="label">Project</span><span id="projectRoot" class="mono truncate">…</span></div>
-          <div class="strip-row"><span class="label">Porymap</span><span id="porymapStatus" class="mono truncate">…</span></div>
+          <div class="strip-row">
+            <span class="label">Project</span>
+            <span id="projectRoot" class="mono path-clip" title="">…</span>
+          </div>
+          <div class="strip-row">
+            <span class="label">Porymap</span>
+            <span id="porymapStatus" class="mono path-clip" title="">…</span>
+          </div>
           <p id="modeBanner" class="banner hidden"></p>
         </div>
 
@@ -50,6 +56,14 @@
           <ul id="activityList" class="activity"></ul>
         </div>
       </aside>
+      <div
+        class="sidebar-resizer"
+        id="sidebarResizer"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize sidebar"
+        tabindex="0"
+      ></div>
 
       <main class="workspace">
         <div class="workspace-top">
