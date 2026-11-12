@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Porymap Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="brand">
+        <div>
+          <p class="eyebrow">Aurora · map cockpit</p>
+          <h1>Porymap Studio</h1>
+        </div>
+        <div id="syncBadge" class="badge idle" title="Sync state">idle</div>
+      </header>
+
+      <section class="strip" id="projectStrip" aria-label="Project status">
+        <div class="strip-row">
+          <span class="label">Project</span>
+          <span id="projectRoot" class="mono truncate">…</span>
+        </div>
+        <div class="strip-row">
+          <span class="label">Porymap</span>
+          <span id="porymapStatus" class="mono truncate">…</span>
+        </div>
+        <p id="modeBanner" class="banner hidden"></p>
+      </section>
+
+      <section class="cta" aria-label="Primary actions">
+        <button type="button" id="btnLaunch" class="btn primary">Launch / Focus Porymap</button>
+        <div class="cta-row">
+          <button type="button" id="btnRegion" class="btn">Open Region Map Editor</button>
+          <button type="button" id="btnGroup" class="btn">Show gMapGroup_Pangea</button>
+        </div>
+        <button type="button" id="btnDefaultMap" class="btn ghost">Open focused map · StibiumTown</button>
+        <button type="button" id="btnAck" class="btn warn hidden">Mark reload done</button>
+      </section>
+
+      <section class="panel" aria-label="Pangea maps">
+        <div class="panel-head">
+          <h2>gMapGroup_Pangea</h2>
+          <input id="mapSearch" type="search" placeholder="Filter maps…" autocomplete="off" />
+        </div>
+        <p id="mapMeta" class="meta"></p>
+        <ul id="mapList" class="map-list"></ul>
+      </section>
+
+      <section class="panel" aria-label="Porymap surfaces">
+        <div class="panel-head">
+          <h2>Surfaces</h2>
+        </div>
+        <p class="meta">Guided entry into native Porymap — not web reimplementations.</p>
+        <div id="surfaceList" class="surfaces"></div>
+      </section>
+
+      <section class="panel" aria-label="Activity feed">
+        <div class="panel-head">
+          <h2>Activity</h2>
+        </div>
+        <p id="reloadHint" class="hint"></p>
+        <ul id="activityList" class="activity"></ul>
+      </section>
+
+      <details class="paths">
+        <summary>Paths</summary>
+        <pre id="pathsDetail" class="mono"></pre>
+      </details>
+    </div>
+
+    <dialog id="guideDialog">
+      <form method="dialog" class="guide">
+        <h3 id="guideTitle"></h3>
+        <p id="guideBody"></p>
+        <div class="guide-actions">
+          <a id="guideDocs" href="#" target="_blank" rel="noreferrer">Docs</a>
+          <button value="close" class="btn primary">Got it</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

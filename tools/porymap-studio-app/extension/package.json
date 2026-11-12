@@ -1,0 +1,63 @@
+{
+  "name": "porymap-studio",
+  "displayName": "Porymap Studio",
+  "description": "Cursor Apps–style panel for Porymap 6.3.1 launch + live sync (full map-stack orchestration).",
+  "version": "0.1.0",
+  "publisher": "sjlillian",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./src/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "porymapStudio",
+          "title": "Porymap Studio",
+          "icon": "media/map.svg"
+        }
+      ]
+    },
+    "views": {
+      "porymapStudio": [
+        {
+          "type": "webview",
+          "id": "porymapStudio.panel",
+          "name": "Porymap Studio"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "porymapStudio.open",
+        "title": "Porymap Studio: Focus Panel"
+      },
+      {
+        "command": "porymapStudio.ensureServer",
+        "title": "Porymap Studio: Start Local Server"
+      }
+    ],
+    "configuration": {
+      "title": "Porymap Studio",
+      "properties": {
+        "porymapStudio.port": {
+          "type": "number",
+          "default": 7340,
+          "description": "Local Porymap Studio server port (127.0.0.1)."
+        },
+        "porymapStudio.autoStartServer": {
+          "type": "boolean",
+          "default": true,
+          "description": "Start the local Studio server when the panel opens."
+        },
+        "porymapStudio.appRoot": {
+          "type": "string",
+          "default": "C:\\Users\\Spencer\\OneDrive\\Desktop\\Pokemon Aurora Project\\porymap-studio-app",
+          "description": "Folder that contains server.mjs (Porymap Studio app root)."
+        }
+      }
+    }
+  }
+}
